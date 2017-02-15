@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:cxf="http://cxf.apache.org/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://cxf.apache.org/jaxrs
+                           http://cxf.apache.org/schemas/jaxrs.xsd
+                           http://cxf.apache.org/core
+                           http://cxf.apache.org/schemas/core.xsd
+                           http://www.springframework.org/schema/context
+ 						   http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+
+	<context:component-scan base-package="com.cs.rest.controller.*" />
+
+	<!-- to support Java-to-JSON and vice-versa conversion -->
+	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+
+	<!-- to support Java-to-XML and vice-versa conversion -->
+	<bean id="jaxbXmlProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider" />
+
+	<!-- CXFServlet configured in web.xml sends requests here -->
+	<jaxrs:server id="controller" address="/">
+		<jaxrs:serviceBeans>
+			<bean class="com.cs.rest.controller.XMLRestController" />
+		</jaxrs:serviceBeans>
+
+		<jaxrs:extensionMappings>
+			<entry key="json" value="application/json" />
+			<entry key="xml" value="application/xml" />  
+		</jaxrs:extensionMappings>
+
+		<jaxrs:providers>
+			<ref bean="jsonProvider" />
+			<ref bean="jaxbXmlProvider" />
+		</jaxrs:providers>
+	</jaxrs:server>
+
+</beans>
